@@ -1,4 +1,4 @@
-# MPT3.py - a YouTube-to-MP3-converter script
+# MPy3 - a YouTube-to-MP3-converter
 This is a handy little tool for converting YouTube videos to mp3 files using PyTube and FFMPEG.
 I decided to upload this to GiHub, since there is many unsatisfying solutions to this problem for daily usage. Many of the solutions I tried destroyed the MP3 header so that no meta attributes (Titel, Artist etc.) could be set for the files.
 
@@ -16,7 +16,7 @@ or
 
 2. using the URL and/or the download directory as command line arguments
 ```bash
-python MPTube3.py "YOUR_URL" "YOUR_DOWNLOAD_DIRECTORY"
+python MPy3.py "YOUR_URL" "YOUR_DOWNLOAD_DIRECTORY"
 ```
 ## Technologies Used
 - [Python](https://www.python.org)
