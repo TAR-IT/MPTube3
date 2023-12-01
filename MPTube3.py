@@ -1,10 +1,15 @@
+import ffmpeg_installer
 from pytube import YouTube
+import subprocess
 import sys
 import os
-import subprocess
 
 
 def main():
+    # Check if ffmpeg is installed
+    if not ffmpeg_installer.check_ffmpeg():
+        ffmpeg_installer()
+        
     # If URL and download location are used in command line arguments, use them
     if len(sys.argv) == 3:
         url = sys.argv[1]
