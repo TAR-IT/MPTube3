@@ -1,3 +1,4 @@
+# script for checking/installing ffmpeg
 import subprocess
 import sys
 

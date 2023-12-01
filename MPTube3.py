@@ -1,13 +1,15 @@
+# MPTube3 - a YouTube-to-mp3-converter
 from lib import ffmpeg_installer
 from pytube import YouTube
 import subprocess
 import sys
 import os
 
+# Change default download directory "~/Downloads" to your needs
 DEFAULT_DOWNLOAD_DIRECTORY = os.path.expanduser("~/Downloads")
 
 def main():
-    # Check if ffmpeg is installed
+    # Check if FFmpeg is installed, if not ask to install it
     if not ffmpeg_installer.check_ffmpeg():
         ffmpeg_installer.install_ffmpeg()
         
