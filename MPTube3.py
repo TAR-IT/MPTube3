@@ -1,14 +1,15 @@
-import ffmpeg_installer
+from lib import ffmpeg_installer
 from pytube import YouTube
 import subprocess
 import sys
 import os
 
+DEFAULT_DOWNLOAD_DIRECTORY = os.path.expanduser("~/Downloads")
 
 def main():
     # Check if ffmpeg is installed
     if not ffmpeg_installer.check_ffmpeg():
-        ffmpeg_installer()
+        ffmpeg_installer.install_ffmpeg()
         
     # If URL and download location are used in command line arguments, use them
     if len(sys.argv) == 3:
@@ -17,16 +18,14 @@ def main():
     elif len(sys.argv) == 2:
         # If only URL is provided, use it and ask for the download location
         url = sys.argv[1]
-        download_location = str(input("Enter download location (or press Enter for the current directory): "))
-        if not download_location:
-            download_location = "./"  # Use the current directory if not provided
+        download_location = input("Enter download location (or press Enter for the default directory): ")
+        download_location = download_location if download_location else DEFAULT_DOWNLOAD_DIRECTORY
     else:
         # Else try to ask for URL and download location
         try:
-            url = str(input("URL: "))
-            download_location = str(input("Enter download location (or press Enter for the current directory): "))
-            if not download_location:
-                download_location = "./"  # Use the current directory if not provided
+            url = input("URL: ")
+            download_location = input("Enter download location (or press Enter for the default directory): ")
+            download_location = download_location if download_location else DEFAULT_DOWNLOAD_DIRECTORY
         # Catch invalid URL input
         except ValueError:
             print("Invalid input.")
