@@ -11,7 +11,8 @@ DEFAULT_DOWNLOAD_DIRECTORY = os.path.expanduser("~/Downloads")
 def main():
     # Check if FFmpeg is installed, if not ask to install it
     if not ffmpeg_installer.check_ffmpeg():
-        ffmpeg_installer.install_ffmpeg()
+        ffmpeg_installer.ask_install_ffmpeg()
+        sys.exit(0)
         
     # If URL and download location are used in command line arguments, use them
     if len(sys.argv) == 3:
