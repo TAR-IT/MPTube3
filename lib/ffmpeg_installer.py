@@ -2,6 +2,7 @@
 import subprocess
 import sys
 
+
 def check_ffmpeg():
     try:
         # Use 'where' command on Windows to check for the existence of ffmpeg
@@ -13,6 +14,7 @@ def check_ffmpeg():
     except subprocess.CalledProcessError:
         return False
     return True
+
 
 def install_ffmpeg_windows():
     try:
@@ -28,6 +30,7 @@ def install_ffmpeg_windows():
         print("Error installing FFmpeg. Please install it manually.")
         sys.exit(1)
 
+
 def install_ffmpeg_linux():
     try:
         subprocess.run(['sudo', 'apt-get', 'install', '-y', 'ffmpeg'], check=True)
@@ -35,6 +38,7 @@ def install_ffmpeg_linux():
     except subprocess.CalledProcessError:
         print("Error installing FFmpeg. Please install it manually using your package manager.")
         sys.exit(1)
+
 
 def install_ffmpeg_macos():
     try:
@@ -44,6 +48,7 @@ def install_ffmpeg_macos():
     except subprocess.CalledProcessError:
         print("Error installing FFmpeg. Please install it manually.")
         sys.exit(1)
+
 
 def ask_install_ffmpeg():
     response = input("FFmpeg is not installed. Do you want to install it automatically? (y/n): ").strip().lower()
@@ -61,9 +66,11 @@ def ask_install_ffmpeg():
         print("FFmpeg is required for this script. Please install it manually.")
         sys.exit(1)
 
+
 def main():
     if not check_ffmpeg():
         ask_install_ffmpeg()
+
 
 if __name__ == "__main__":
     main()
