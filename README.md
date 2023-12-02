@@ -5,7 +5,7 @@ I decided to upload this to GiHub, since there is many unsatisfying solutions to
 In this approach, the video (mp4-format) is downloaded from YouTube using PyTube and then converted into a mp3 file by ffmpeg, which prevents data corruption.
 ## Installation
 1. Fork/clone the repository or download the repository as a .zip folder and unzip it.
-2. Install ffmpeg (if you don't already have it). If you run the script, it will ask you to automatically install it.
+2. Install FFmpeg (if you don't already have it). If you run the script, it will ask you to automatically install it.
 3. Run the MPy3 script file via the command line.
 ## Usage
 1. just running the script via
@@ -18,6 +18,8 @@ or
 ```bash
 python MPy3.py "YOUR_URL" "YOUR_DOWNLOAD_DIRECTORY"
 ```
+
+For fetching meta data via the Discogs API, a Discogs User Token is required. It can either be inserted into the code directly or set as a system variable ("DISCOGS_USER_TOKEN") to be recognized by the program automatically
 ## Technologies Used
 - [Python](https://www.python.org)
     - The project uses **Python** code mainly.

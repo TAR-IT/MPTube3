@@ -1,7 +1,11 @@
 # script for fetching metadata using the Discogs API
+from mutagen.id3 import ID3, TIT2, TPE1, TDRC
 import discogs_client
 import os
-from mutagen.id3 import ID3, TIT2, TPE1, TDRC
+
+def main():
+    get_meta()
+    attach_meta()
 
 def get_meta(title):
     try:
@@ -32,6 +36,7 @@ def get_meta(title):
         print(f"Error fetching Discogs metadata: {e}")
         return None
 
+
 def attach_meta(file_path, metadata):
     try:
         audio = ID3(file_path.replace('.mp4', '.mp3'))
@@ -43,3 +48,7 @@ def attach_meta(file_path, metadata):
         print("Metadata attached to the file.")
     except Exception as e:
         print(f"Error attaching metadata to the file: {e}")
+
+
+if __name__ == "__main__":
+    main()

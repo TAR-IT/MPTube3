@@ -3,6 +3,11 @@ import subprocess
 import sys
 
 
+def main():
+    if not check_install():
+        ask_install()
+
+
 def check_install():
     try:
         # Use 'where' command on Windows to check for the existence of ffmpeg
@@ -65,11 +70,6 @@ def ask_install():
     else:
         print("FFmpeg is required for this script. Please install it manually.")
         sys.exit(1)
-
-
-def main():
-    if not check_install():
-        ask_install()
 
 
 if __name__ == "__main__":
