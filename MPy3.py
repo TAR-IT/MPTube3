@@ -1,5 +1,5 @@
 # MPTube3 - a YouTube-to-mp3-converter
-from lib import ffmpeg_installer
+from lib import ffmpeg
 from pytube import YouTube
 import subprocess
 import sys
@@ -31,8 +31,8 @@ def clean_filename(title):
 def main():
     while True:
         # Check if FFmpeg is installed, if not ask to install it
-        if not ffmpeg_installer.check_ffmpeg():
-            ffmpeg_installer.ask_install_ffmpeg()
+        if not ffmpeg.check_install():
+            ffmpeg.ask_install()
             sys.exit(0)
 
         # If URL and download location are used in command line arguments, use them
