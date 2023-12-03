@@ -3,7 +3,6 @@ from lib import ffmpeg, meta
 from decouple import config
 from pytube import YouTube, exceptions
 import subprocess
-import time
 import sys
 import os
 import re

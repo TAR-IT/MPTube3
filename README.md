@@ -38,9 +38,13 @@ For fetching meta data via the Discogs API, a Discogs User Token is required. It
 ## Technologies Used
 - [Python](https://www.python.org)
     - The project uses **Python** code mainly.
-    - Python packaged used: discogs-client, ffmpeg, mutagen, pytube, python-decouple.
+    - Python packaged used: 
+        - [pytube](https://pytube.io/en/latest/)
+        - [python-decouple](https://pypi.org/project/python-decouple/)
+        - [pipenv](https://pipenv.pypa.io/en/latest/)
 - [FFmpeg](https://ffmpeg.org)
     - The project uses FFmpeg to convert mp4 into mp3.
 ## Roadmap
-- Automatically fetching meta data from YouTube, returning it to the Discogs API and attaching Discogs meta data to the file.
+- Automatically fetching meta data from YouTube, returning it to the Discogs API and attaching Discogs meta data to the file - for better search results.
+- Ability to edit meta in the process of using the program.
 - Intuitive GUI
