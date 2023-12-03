@@ -1,14 +1,16 @@
 # MPy3 - a YouTube-to-mp3-converter
-from lib import ffmpeg, meta, validation
-from pytube import YouTube
+from lib import ffmpeg, meta
 from decouple import config
+from pytube import YouTube, exceptions
 import subprocess
 import time
 import sys
 import os
+import re
 
-# default download directory "~\Downloads" - change to your needs
-DEFAULT_DOWNLOAD_DIRECTORY = config("DEFAULT_DOWNLOAD_DIRECTORY", default="~/Downloads")
+
+# default download directory ".\Downloads" - change to your needs
+DEFAULT_DOWNLOAD_DIRECTORY = config("DEFAULT_DOWNLOAD_DIRECTORY", default="./Downloads")
 
 
 def main():
@@ -25,20 +27,34 @@ def main():
         elif len(sys.argv) == 2:
             # If only URL is provided, use it and ask for the download location
             url = sys.argv[1]
-            download_location = input("Enter download location (or press Enter for the default directory): ")
+            download_location = input("\nEnter download location (or press Enter for the default directory): ")
             download_location = download_location if download_location else DEFAULT_DOWNLOAD_DIRECTORY
         else:
             # Else try to ask for URL and download location
-            url = validation.get_valid_url()
-            download_location = input("Enter download location (or press Enter for the default directory): ")
+            url = get_valid_url()
+            download_location = input("\nEnter download location (or press Enter for the default directory): ")
             download_location = download_location if download_location else DEFAULT_DOWNLOAD_DIRECTORY
 
-        mp4_file_path = download_to_mp4(url, download_location)
-        mp3_file_path = convert_to_mp3(mp4_file_path)
+        mp4_file = download_to_mp4(url, download_location)
+        convert_to_mp3(mp4_file)
 
-        repeat = input("Do you want to download another file? (y/yes or q/quit to exit): ").lower()
-        if repeat in ['q', 'quit']:
+        repeat = input("\nDo you want to download another file? (y/yes or q/quit to exit): ").lower()
+        if repeat in ["q", "quit"]:
             sys.exit(0)
+            
+
+def get_valid_url():
+    while True:
+        try:
+            url = input("\nURL: ")
+            if url.lower() in ['q', 'quit']:
+                sys.exit(0)
+            video = YouTube(url)  # Try creating a YouTube object with the input URL
+            return url
+        except exceptions.VideoUnavailable:
+            print("\nError: The YouTube video is unavailable.")
+        except Exception as e:
+            print(f"\nError: {e}.")
 
 
 def download_to_mp4(url, download_location):
@@ -50,33 +66,20 @@ def download_to_mp4(url, download_location):
           """)
 
     # Get the best available video stream with a flashing dot
-    print("Getting highest bitrate stream available...")
+    print("\nGetting highest bitrate stream available...")
     stream = video.streams.get_audio_only()
-    print("Stream found.")
-
-    # Flashing dot animation to indicate fetching
-    while not stream:
-        print(".", end='', flush=True)
-        time.sleep(0.5)  # Adjust the sleep duration as needed
-        stream = video.streams.get_audio_only()
+    print("\nStream found.")
 
     # Clean the video title to remove invalid characters for use as a file name
-    print("Cleaning title...")
-    cleaned_title = validation.clean_filename(video.title)
+    print("\nCleaning title from invalid characters...")
+    cleaned_title = re.sub(r'[<>:"/\\|?*]', "", video.title)
     print(f"\nCleaned Title: {cleaned_title}")
 
-    # Download video to the specified location with a flashing dot
-    print(f"\nDownloading file to '{download_location}'", end='', flush=True)
+    # Download video to the specified location
+    print(f"\nDownloading file to '{download_location}'...")
     os.makedirs(download_location, exist_ok=True)
     file_path = os.path.join(download_location, f"{cleaned_title}.mp4")
     stream.download(output_path=download_location, filename=f"{cleaned_title}.mp4")
-
-    # Flashing dot animation to indicate downloading
-    while not os.path.exists(file_path):
-        print(".", end='', flush=True)
-        time.sleep(0.5)  # Adjust the sleep duration as needed
-
-    print()  # Move to the next line after the flashing dot animation
     print(f"\nThe file has been downloaded successfully to {file_path}.")
 
     return file_path

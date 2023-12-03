@@ -1,10 +1,7 @@
 # script for fetching metadata using the Discogs API
 from mutagen.id3 import ID3, TIT2, TPE1, TDRC
-from pytube import YouTube, exceptions
 from decouple import config
-from . import validation
 import discogs_client
-import os
 
 def main():
     get_meta()
@@ -34,10 +31,10 @@ def get_meta(title):
             }
             return metadata
         else:
-            print("No Discogs results found.")
+            print("\nNo Discogs results found.")
             return None
     except Exception as e:
-        print(f"Error fetching Discogs metadata: {e}")
+        print(f"\nError fetching Discogs metadata: {e}")
         return None
 
 def attach_meta(file_path, metadata):
@@ -48,9 +45,9 @@ def attach_meta(file_path, metadata):
         audio.add(TDRC(encoding=3, text=str(metadata['year'])))
         # TODO: Add more meta tags
         audio.save()
-        print("Metadata attached to the file.")
+        print("\nMetadata attached to the file.")
     except Exception as e:
-        print(f"Error attaching metadata to the file: {e}")
+        print(f"\nError attaching metadata to the file: {e}")
 
 if __name__ == "__main__":
     main()
