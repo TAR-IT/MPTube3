@@ -1,6 +1,6 @@
 # MPTube3 - a YouTube-to-mp3-converter
 from lib import ffmpeg, meta
-from pytube import YouTube
+from pytube import YouTube, exceptions
 import subprocess
 import sys
 import os
@@ -16,10 +16,12 @@ def get_valid_url():
             url = input("URL: ")
             if url.lower() in ['q', 'quit']:
                 sys.exit(0)
-            YouTube(url)  # Try creating a YouTube object with the input URL
+            yt = YouTube(url)  # Try creating a YouTube object with the input URL
             return url
+        except exceptions.VideoUnavailable:
+            print("Error: The YouTube video is unavailable.")
         except Exception as e:
-            print("Invalid URL. Please enter a valid YouTube URL.")
+            print(f"Error: {e}.")
 
 
 def clean_filename(title):
