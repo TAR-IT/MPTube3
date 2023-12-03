@@ -1,33 +1,13 @@
 # MPTube3 - a YouTube-to-mp3-converter
-from lib import ffmpeg, meta
-from pytube import YouTube, exceptions
+from lib import ffmpeg, meta, validation
+from pytube import YouTube
+from decouple import config
 import subprocess
 import sys
 import os
-import re
 
 # default download directory "~\Downloads" - change to your needs
-DEFAULT_DOWNLOAD_DIRECTORY = os.path.expanduser("~\Downloads")
-
-
-def get_valid_url():
-    while True:
-        try:
-            url = input("URL: ")
-            if url.lower() in ['q', 'quit']:
-                sys.exit(0)
-            yt = YouTube(url)  # Try creating a YouTube object with the input URL
-            return url
-        except exceptions.VideoUnavailable:
-            print("Error: The YouTube video is unavailable.")
-        except Exception as e:
-            print(f"Error: {e}.")
-
-
-def clean_filename(title):
-    # Remove invalid characters from the title to make it suitable as a file name
-    cleaned_title = re.sub(r'[<>:"/\\|?*]', '', title)
-    return cleaned_title
+DEFAULT_DOWNLOAD_DIRECTORY = config("DEFAULT_DOWNLOAD_DIRECTORY", default="~/Downloads")
 
 
 def main():
@@ -48,7 +28,7 @@ def main():
             download_location = download_location if download_location else DEFAULT_DOWNLOAD_DIRECTORY
         else:
             # Else try to ask for URL and download location
-            url = get_valid_url()
+            url = validation.get_valid_url()
             download_location = input("Enter download location (or press Enter for the default directory): ")
             download_location = download_location if download_location else DEFAULT_DOWNLOAD_DIRECTORY
 
@@ -70,7 +50,7 @@ def download_and_convert_to_mp3(url, download_location):
     stream = video.streams.get_audio_only()
 
     # Clean the video title to remove invalid characters for use as a file name
-    cleaned_title = clean_filename(video.title)
+    cleaned_title = validation.clean_filename(video.title)
     print(f"Cleaned Title: {cleaned_title}")
 
     # Download video to the specified location
