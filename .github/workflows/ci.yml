@@ -32,6 +32,8 @@ jobs:
           DISCOGS_USER_TOKEN: ${{ secrets.DISCOGS_USER_TOKEN }}
         run: |
           pipenv run python MPy3.py
+          y
+          quit
 
       - name: quit programm
         run: pkill -f "python MPy3.py"
