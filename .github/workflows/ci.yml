@@ -1,0 +1,39 @@
+name: Continous integration test suite
+
+on:
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: [3.11]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Upgrade pip and pipenv
+        run: pip install --upgrade pip && pip install pipenv && pip install --upgrade pipenv
+        working-directory: /
+
+      - name: Install dependencies
+        run: pipenv install --deploy
+
+      - name: Run MPy3.py
+        env:
+          DISCOGS_USER_TOKEN: ${{ secrets.DISCOGS_USER_TOKEN }}
+        run: |
+          pipenv run python MPy3.py
+
+      - name: quit programm
+        run: pkill -f "python MPy3.py"
+        working-directory: /
+        if: always()
