@@ -1,8 +1,9 @@
-# MPTube3 - a YouTube-to-mp3-converter
+# MPy3 - a YouTube-to-mp3-converter
 from lib import ffmpeg, meta, validation
 from pytube import YouTube
 from decouple import config
 import subprocess
+import time
 import sys
 import os
 
@@ -32,46 +33,66 @@ def main():
             download_location = input("Enter download location (or press Enter for the default directory): ")
             download_location = download_location if download_location else DEFAULT_DOWNLOAD_DIRECTORY
 
-        download_and_convert_to_mp3(url, download_location)
+        mp4_file_path = download_to_mp4(url, download_location)
+        mp3_file_path = convert_to_mp3(mp4_file_path)
 
         repeat = input("Do you want to download another file? (y/yes or q/quit to exit): ").lower()
         if repeat in ['q', 'quit']:
             sys.exit(0)
 
 
-def download_and_convert_to_mp3(url, download_location):
+def download_to_mp4(url, download_location):
     # Take URL and download
     video = YouTube(url)
-    print(f"Title: {video.title}")
-    print(f"Length: {video.length} seconds")
+    print(f"""
+          Title: {video.title}
+          Length: {video.length} seconds
+          """)
 
-    # Get the best available video stream
+    # Get the best available video stream with a flashing dot
     print("Getting highest bitrate stream available...")
     stream = video.streams.get_audio_only()
+    print("Stream found.")
+
+    # Flashing dot animation to indicate fetching
+    while not stream:
+        print(".", end='', flush=True)
+        time.sleep(0.5)  # Adjust the sleep duration as needed
+        stream = video.streams.get_audio_only()
 
     # Clean the video title to remove invalid characters for use as a file name
+    print("Cleaning title...")
     cleaned_title = validation.clean_filename(video.title)
-    print(f"Cleaned Title: {cleaned_title}")
+    print(f"\nCleaned Title: {cleaned_title}")
 
-    # Download video to the specified location
-    print(f"Downloading file to '{download_location}'...")
+    # Download video to the specified location with a flashing dot
+    print(f"\nDownloading file to '{download_location}'", end='', flush=True)
     os.makedirs(download_location, exist_ok=True)
     file_path = os.path.join(download_location, f"{cleaned_title}.mp4")
     stream.download(output_path=download_location, filename=f"{cleaned_title}.mp4")
 
-    # Wait until the file is fully downloaded
+    # Flashing dot animation to indicate downloading
     while not os.path.exists(file_path):
-        pass
-    print(f"The file has been downloaded successfully to {file_path}.")
+        print(".", end='', flush=True)
+        time.sleep(0.5)  # Adjust the sleep duration as needed
+
+    print()  # Move to the next line after the flashing dot animation
+    print(f"\nThe file has been downloaded successfully to {file_path}.")
+
+    return file_path
+
+
+def convert_to_mp3(mp4_file):
+    mp3_file = mp4_file.replace('.mp4', '.mp3')
 
     # Convert video to MP3 using FFmpeg
-    print(f"Converting file to MP3 using FFmpeg...")
-    subprocess.run(['ffmpeg', '-i', file_path, '-q:a', '0', '-map', 'a', file_path.replace('.mp4', '.mp3')],
+    print(f"\nConverting file to MP3 using FFmpeg...")
+    subprocess.run(['ffmpeg', '-i', mp4_file, '-q:a', '0', '-map', 'a', mp3_file],
                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    print(f"The file has been converted to MP3 successfully: {file_path.replace('.mp4', '.mp3')}.")
-    
-        # Fetch Discogs metadata
-    discogs_metadata = meta.get_meta(cleaned_title)
+    print(f"\nThe file has been converted to MP3 successfully: {mp3_file}")
+
+    # Fetch Discogs metadata
+    discogs_metadata = meta.get_meta(os.path.basename(mp3_file).replace('.mp3', ''))
 
     if discogs_metadata:
         print("\nDiscogs Metadata:")
@@ -79,12 +100,14 @@ def download_and_convert_to_mp3(url, download_location):
             print(f"{key}: {value}")
 
         # Attach Discogs metadata to the downloaded file
-        meta.attach_meta(file_path, discogs_metadata)
-    
+        meta.attach_meta(mp3_file, discogs_metadata)
+
     # Delete the original video file if needed
-    print(f"Deleting old file...")
-    os.remove(file_path)
-    print(f"Done!")
+    print(f"\nDeleting old file...")
+    os.remove(mp4_file)
+    print(f"\nDone!")
+
+    return mp3_file
 
 
 if __name__ == "__main__":
