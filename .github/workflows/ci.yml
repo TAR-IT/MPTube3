@@ -1,7 +1,9 @@
-name: Continous integration test suite
+name: Continuous integration test suite
 
 on:
   push:
+    branches:
+      - main
 
 jobs:
   build:
@@ -24,6 +26,9 @@ jobs:
         run: pip install --upgrade pip && pip install pipenv && pip install --upgrade pipenv
         working-directory: /
 
+      - name: Set FFmpeg installation preference
+        run: echo "INSTALL_FFMPEG=true" >> $GITHUB_ENV
+
       - name: Install dependencies
         run: pipenv install --deploy
 
@@ -32,10 +37,8 @@ jobs:
           DISCOGS_USER_TOKEN: ${{ secrets.DISCOGS_USER_TOKEN }}
         run: |
           pipenv run python MPy3.py
-          y
-          quit
 
-      - name: quit programm
+      - name: Quit program
         run: pkill -f "python MPy3.py"
         working-directory: /
         if: always()
