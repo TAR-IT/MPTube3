@@ -3,10 +3,8 @@
 #####################################################
 
 ############ LIBRARIES ###########
-from mutagen.id3 import ID3, APIC, TIT2, TPE1, TDRC
 from pytube import YouTube, exceptions
 from decouple import config
-import requests
 import subprocess
 import sys
 import os
@@ -36,22 +34,35 @@ def main():
         elif len(sys.argv) == 2:
             # If only URL is provided, use it and ask for the download location
             url = get_valid_url(sys.argv[1])
-            download_location = input("\nEnter download location (or press Enter for the default directory): ")
+            download_location = input("Enter download location (or press Enter for the default directory): ")
             download_location = download_location if download_location else DEFAULT_DOWNLOAD_DIRECTORY
         else:
             # Else try to ask for URL and download location
-            url = get_valid_url(input("\nURL: "))
-            download_location = input("\nEnter download location (or press Enter for the default directory): ")
+            url = get_valid_url(input("URL: "))
+            download_location = input("Enter download location (or press Enter for the default directory): ")
             download_location = download_location if download_location else DEFAULT_DOWNLOAD_DIRECTORY
             
+        # create video object, download video and convert to mp3
         video = YouTube(url)
         mp3_file = download_and_convert_video(video, download_location)
+        
+        # adding YouTube meta
         metadata.get_youtube_meta(video, mp3_file)
-#       The following line is commented out until discogs API fetching is fully integrated
-#        metadata.get_discogs_meta(video, mp3_file)
+        
+        while True:
+            # ask to fetch Discogs meta and add it to the file (overwriting the YouTube meta)
+            discogs_answer = input("Do you want to search Discogs for metadata as well? (y/yes or n/no): ").lower()
+            if discogs_answer in ["y", "yes"]:
+                metadata.get_discogs_meta(video, mp3_file)
+                break
+            elif discogs_answer in ["n", "no"]:
+                break
+            else:
+                print("Invalid input. Please enter 'y'/'yes' or 'n'/'no'.")
 
-        repeat = input("\nDone! Do you want to download another file? (y/yes or q/quit to exit): ").lower()
-        if repeat in ["q", "quit"]:
+        # repeat or exit
+        repeat = input("Done! Do you want to download another file? (Press Enter to start over or n/no/q/quit to exit): ").lower()
+        if repeat in ["q", "quit", "n", "no"]:
             sys.exit(0)
 
 
@@ -63,9 +74,9 @@ def get_valid_url(url):
                 sys.exit(0)
             return url
         except exceptions.VideoUnavailable:
-            print("\nError: The YouTube video is unavailable.")
+            print("Error: The YouTube video is unavailable.")
         except Exception as e:
-            print(f"\nError: {e}.")
+            print(f"Error: {e}.")
 
 
 ######### VIDEO DOWNLOAD AND CONVERTION ######### 
@@ -77,11 +88,11 @@ def download_and_convert_video(video, download_location):
           """)
 
     # Get the best available video stream with a flashing dot
-    print("\nGetting highest bitrate stream available...")
+    print("Getting highest bitrate stream available...")
     stream = video.streams.get_audio_only()
 
     # Clean the video title to remove invalid characters for use as a file name
-    print("\nStream found. Cleaning title from invalid characters...")
+    print("Stream found. Cleaning title from invalid characters...")
     cleaned_title = re.sub(r'[<>:"/\\|?*]', "", f"{video.author} - {video.title}")
 
     # Download video to the specified location
@@ -92,17 +103,17 @@ def download_and_convert_video(video, download_location):
     os.makedirs(download_location, exist_ok=True)
     mp4_file = os.path.join(download_location, f"{cleaned_title}.mp4")
     stream.download(output_path=download_location, filename=f"{cleaned_title}.mp4")
-    print(f"\nThe file has been downloaded successfully to {mp4_file}.")
+    print(f"The file has been downloaded successfully to {mp4_file}.")
     
     mp3_file = mp4_file.replace('.mp4', '.mp3')
 
     # Convert video to MP3 using FFmpeg
-    print(f"\nConverting file to MP3 using FFmpeg...")
+    print("Converting file to MP3 using FFmpeg...")
     subprocess.run(['ffmpeg', '-i', mp4_file, '-q:a', '0', '-map', 'a', mp3_file],
                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    print(f"\nThe file has been converted to MP3 successfully: {mp3_file}")
+    print(f"The file has been converted to MP3 successfully: {mp3_file}")
 
-    print(f"\nCleaning everything up...")
+    print("Cleaning everything up...")
     os.remove(mp4_file)
     
     return mp3_file
