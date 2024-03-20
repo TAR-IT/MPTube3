@@ -22,28 +22,25 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install pipenv
-        run: pip install pipenv
-
-      - name: Upgrade pip and pipenv
-        run: |
-          pip install --upgrade pip
-          pip install --upgrade pipenv
-        working-directory: /
-
       - name: Set FFmpeg installation preference
         run: echo "INSTALL_FFMPEG=true" >> $GITHUB_ENV
 
       - name: Install dependencies
-        run: pipenv install --deploy
+        run: |
+          pip install --upgrade pip
+          pip install pipenv
+          pip install --upgrade pipenv
+          pipenv install --deploy
+        working-directory: /
 
   run:
-    needs: build
     runs-on: ubuntu-latest
+    needs: build
 
     steps:
       - name: Run MPy3.py
         env:
           DISCOGS_USER_TOKEN: ${{ secrets.DISCOGS_USER_TOKEN }}
         run: |
-          python MPy3.py
+          pipenv run python MPy3.py
+        working-directory: /
