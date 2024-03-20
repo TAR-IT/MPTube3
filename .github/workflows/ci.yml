@@ -27,8 +27,7 @@ jobs:
           pip install --upgrade pip
           pip install pipenv
           pip install --upgrade pipenv
-          pipenv install --deploy
-        working-directory: /
+          pipenv install
 
   run:
     runs-on: ubuntu-latest
