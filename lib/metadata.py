@@ -1,9 +1,15 @@
+###############################################################
+######### metadata.py - helper for fetching metadata ##########
+###############################################################
+
+############ LIBRARIES ###########
 from mutagen.id3 import ID3, APIC, TIT2, TPE1, TDRC, TCON
 from decouple import config
 import discogs_client
 import requests
 
 
+######### MAIN FUNCTION #########
 def main():
     get_youtube_meta()
     get_discogs_meta()
@@ -106,7 +112,6 @@ def get_discogs_meta(video, mp3_file):
     except Exception as e:
         print(f"Error attaching Discogs metadata to the file: {e}")    
         return None
-
 
 
 if __name__ == "__main__":

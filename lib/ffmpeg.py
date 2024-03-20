@@ -1,5 +1,15 @@
+#####################################################################
+######### ffmpeg.py - helper for checking/installing ffmpeg #########
+#####################################################################
+
+############ LIBRARIES ###########
 import subprocess
 import sys
+
+######### MAIN FUNCTION #########
+def main():
+    check()
+    install()
 
 
 ######### FFMPEG DEPENDENCY CHECKS #########            
@@ -14,6 +24,7 @@ def check():
     except subprocess.CalledProcessError:
         return False
     return True
+
 
 def install():
     response = input("FFmpeg is not installed. Do you want to install it automatically? (y/n): ").strip().lower()
@@ -52,7 +63,7 @@ def install():
     else:
         print("FFmpeg is required for this script. Please install it manually.")
         sys.exit(1)
-        
+
+
 if __name__ == "__main__":
-    check()
-    install()
+    main()
