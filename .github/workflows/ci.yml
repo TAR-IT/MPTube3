@@ -22,6 +22,18 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      - name: Download FFmpeg
+        run: |
+          mkdir -p $HOME/ffmpeg
+          wget https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz
+          tar -xf ffmpeg-release-amd64-static.tar.xz -C $HOME/ffmpeg --strip-components=1
+  
+      - name: Add FFmpeg to PATH
+        run: echo "PATH=$HOME/ffmpeg:$PATH" >> $GITHUB_ENV
+
+      - name: Verify FFmpeg installation
+        run: ffmpeg -version
+
       - name: Install dependencies
         run: |
           pip install --upgrade pip
@@ -29,14 +41,9 @@ jobs:
           pip install --upgrade pipenv
           pipenv install
 
-  run:
-    runs-on: ubuntu-latest
-    needs: build
-
-    steps:
       - name: Run MPy3.py
         env:
-          DISCOGS_USER_TOKEN: ${{ secrets.DISCOGS_USER_TOKEN }}
+            DISCOGS_USER_TOKEN: ${{ secrets.DISCOGS_USER_TOKEN }}
         run: |
-          pipenv run python MPy3.py
+            pipenv run python MPy3.py
         working-directory: /
