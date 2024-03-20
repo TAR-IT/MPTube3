@@ -27,6 +27,7 @@ jobs:
           mkdir -p $HOME/ffmpeg
           wget https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz
           tar -xf ffmpeg-release-amd64-static.tar.xz -C $HOME/ffmpeg --strip-components=1
+        working-directory: ${{ github.workspace }}
   
       - name: Add FFmpeg to PATH
         run: echo "PATH=$HOME/ffmpeg:$PATH" >> $GITHUB_ENV
@@ -40,10 +41,11 @@ jobs:
           pip install pipenv
           pip install --upgrade pipenv
           pipenv install
+        working-directory: ${{ github.workspace }}
 
       - name: Run MPy3.py
         env:
             DISCOGS_USER_TOKEN: ${{ secrets.DISCOGS_USER_TOKEN }}
         run: |
             pipenv run python MPy3.py
-        working-directory: /
+        working-directory: ${{ github.workspace }}
