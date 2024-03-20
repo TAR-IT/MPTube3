@@ -21,6 +21,9 @@ DEFAULT_DOWNLOAD_DIRECTORY = config("DEFAULT_DOWNLOAD_DIRECTORY", default=os.pat
 
 ######### MAIN FUNCTION #########
 def main():
+    # Exit if file is started e.g. in pipeline or GitHub Actions
+    if not sys.stdin.isatty():
+       sys.exit(0)
     while True:
         # Check if FFmpeg is installed, if not ask to install it
         if not ffmpeg.check():
