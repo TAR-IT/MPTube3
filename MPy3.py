@@ -46,7 +46,9 @@ def main():
             
         video = YouTube(url)
         mp3_file = download_and_convert_video(video, download_location)
-        metadata.attach(video, mp3_file)
+        metadata.get_youtube_meta(video, mp3_file)
+#       The following line is commented out until discogs API fetching is fully integrated
+#        metadata.get_discogs_meta(video, mp3_file)
 
         repeat = input("\nDone! Do you want to download another file? (y/yes or q/quit to exit): ").lower()
         if repeat in ["q", "quit"]:
