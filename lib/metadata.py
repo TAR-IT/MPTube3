@@ -103,8 +103,6 @@ def get_discogs_meta(video, mp3_file):
                 print("Metadata used.")
                 return  # Exit the function since metadata is used
 
-            print("Attaching metadata...")
-
     except Exception as e:
         print(f"Error attaching Discogs metadata to the file: {e}")    
         return None
