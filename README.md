@@ -13,11 +13,11 @@ pipenv install # installs the dependencies using pipenv
 3. Create a new file called ".env" in the repository and add the following lines:
 ```bash
 DEFAULT_DOWNLOAD_DIRECTORY="./Downloads" # creates a Downloads folder in the current directory - change path if needed
-DISCOGS_USER_TOKEN="yourusertoken" # insert your Discogs API User Token
+DISCOGS_USER_TOKEN="yourusertoken" # insert your Discogs API User Token if you want to fetch meta from there
 ```
 4. Run the MPy3 script file via the command line. If you dont have FFmpeg installed yet, it will ask you to install it automatically.
 ## Usage
-Just run the script via
+Just run the file MPy3.py (or MPy3.bat of the .py file is making trouble), or run the script via
 ```bash
 pipenv run python MPy3.py
 ```
@@ -45,6 +45,7 @@ For fetching meta data via the Discogs API, a Discogs User Token is required. It
 - [FFmpeg](https://ffmpeg.org)
     - The project uses FFmpeg to convert mp4 into mp3.
 ## Roadmap
-- Automatically fetching meta data from YouTube, returning it to the Discogs API and attaching Discogs meta data to the file - for better search results.
+- Automatically giving the YouTube meta to the Discogs API and attaching Discogs meta data from the search result to the file - for better results.
+- Being able to decline discogs search results to get the next one or quit completely, leaving the file with YouTube meta.
 - Ability to edit meta in the process of using the program.
 - Intuitive GUI
