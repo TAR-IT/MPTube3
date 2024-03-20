@@ -23,7 +23,10 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Upgrade pip and pipenv
-        run: pip install --upgrade pip && pip install pipenv && pip install --upgrade pipenv
+        run: |
+          pip install --upgrade pip
+          pip install pipenv
+          pip install --upgrade pipenv
         working-directory: /
 
       - name: Set FFmpeg installation preference
@@ -32,13 +35,13 @@ jobs:
       - name: Install dependencies
         run: pipenv install --deploy
 
+  run:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
       - name: Run MPy3.py
         env:
           DISCOGS_USER_TOKEN: ${{ secrets.DISCOGS_USER_TOKEN }}
         run: |
           pipenv run python MPy3.py
-
-      - name: Quit program
-        run: pkill -f "python MPy3.py"
-        working-directory: /
-        if: always()
