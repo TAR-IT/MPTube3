@@ -22,13 +22,14 @@ In this approach, the audio stream of the YouTube-video (mp4-format) is download
     - The project uses FFmpeg to convert mp4 into mp3.
 ## Getting Started
 ### Installation
+1. Install [Python](https://www.python.org).
 1. Fork/clone the repository or download the repository as a .zip folder and unzip it.
 2. Either install the dependencies manually or install using "pipenv":
 ```bash
 pip install pipenv # installs the pipenv package
 pipenv install # installs the dependencies using pipenv
 ```
-3. Create a new file called ".env" in the repository and add the following lines:
+3. Create a new file called ".env" in the repository directory and add the following lines:
 ```bash
 DEFAULT_DOWNLOAD_DIRECTORY="./Downloads" # creates a Downloads folder in the current directory - change path if needed
 DISCOGS_USER_TOKEN="yourusertoken" # insert your Discogs API User Token if you want to fetch meta from there
