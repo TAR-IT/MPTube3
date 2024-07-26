@@ -1,4 +1,6 @@
 # MPy3 - a YouTube-to-MP3-converter
+ATTENTION: This program is currently not working because of an RegEx error in the PyTube library (it seems like YouTube changed the way they deliver their js that is used in cipher.py by PyTube) - the issue is currently inspected and worked on. Please see [Issue #1995](https://github.com/pytube/pytube/issues/1995)
+
 This is a handy little tool for converting YouTube videos to MP3 files (including meta data) using mainly PyTube and FFmpeg.
 I decided to upload this to GitHub, since in my opinion there are many unsatisfying solutions to this problem for daily usage. Many of the solutions I tried destroyed the MP3 header so that no meta attributes (Titel, Artist etc.) could be set for the files before converting them to mp3 manually using e.g. FFmpeg.
 
